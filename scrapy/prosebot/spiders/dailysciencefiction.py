@@ -14,18 +14,22 @@ class DailyScienceFictionSpider(CrawlSpider):
     rules           = (
         # Fiction index pages.
         Rule(LinkExtractor(
-                allow=(
+                allow=([
                     '/month/stories/\d{4}\.\d{2}'
-                ),
-                restrict_xpath(content_xpath)
+                ]),
+                restrict_xpaths=(content_xpath)
             )
         ),
         # Fiction stories.
         Rule(LinkExtractor(
-                allow=(
+                allow=([
                     '/story/.+'
-                ),
-                restrict_xpath(content_xpath)
+                ]),
+                deny=([
+                    '/month',
+                    '/genre/.+'
+                ]),
+                restrict_xpaths=(content_xpath)
             ), callback='parse_story'
         ),
     )
