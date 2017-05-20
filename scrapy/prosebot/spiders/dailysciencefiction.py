@@ -7,22 +7,25 @@ from scrapy.linkextractors import LinkExtractor
 
 
 class DailyScienceFictionSpider(CrawlSpider):
-    name            = "dailysciencefiction"
-    allowed_domains = ["dailysciencefiction.com"]
-    start_urls      = ["http://dailysciencefiction.com/month"]
+    name            = 'dailysciencefiction'
+    allowed_domains = ['dailysciencefiction.com']
+    start_urls      = ['http://dailysciencefiction.com/month']
+    content_xpath   = '//*[@id="mainBodyContent"]'
     rules           = (
         # Fiction index pages.
         Rule(LinkExtractor(
                 allow=(
                     '/month/stories/\d{4}\.\d{2}'
-                )
+                ),
+                restrict_xpath(content_xpath)
             )
         ),
         # Fiction stories.
         Rule(LinkExtractor(
                 allow=(
                     '/story/.+'
-                )
+                ),
+                restrict_xpath(content_xpath)
             ), callback='parse_story'
         ),
     )
@@ -33,7 +36,7 @@ class DailyScienceFictionSpider(CrawlSpider):
         text            = ''
 
         story           = Story()
-        story['magazine'] = "Daily Science Fiction"
+        story['magazine'] = 'Daily Science Fiction'
         story['genre']  = ['science fiction']
         story['url']    = response.url
         # Tags are embedded in the URL, but not actually displayed on the story's page.
