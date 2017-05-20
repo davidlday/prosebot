@@ -8,30 +8,33 @@ from scrapy.linkextractors import LinkExtractor
 
 
 class StrangeHorizonsSpider(CrawlSpider):
-    name            = "strangehorizons"
-    allowed_domains = ["strangehorizons.com"]
-    page_url        = "http://strangehorizons.com/fiction/page/%s/"
+    name            = 'strangehorizons'
+    allowed_domains = ['strangehorizons.com']
+    page_url        = 'http://strangehorizons.com/fiction/page/%s/'
     page            = 1
     start_urls      = [page_url % page]
+    content_xpath   = '//div[contains(@class, "infinite-scroll")]'
     rules           = (
         # Fiction index pages.
         Rule(LinkExtractor(
-                allow=(
-                    ['/fiction/', '/fiction/page/\d{1,}/']
-                ),
-                deny=('/fiction/.+/'),
-                restrict_xpaths=('//div[contains(@class, "archive-right-sidebar")]')
+                allow=([
+                    '/fiction/',
+                    '/fiction/page/\d{1,}/'
+                ]),
+                deny=([
+                    '/fiction/.+/'
+                ]),
+                restrict_xpaths=(content_xpath)
             ),
             process_links='inject_next_page'
         ),
         # Fiction stories.
         Rule(LinkExtractor(
-                allow=(
-                    '/fiction/.+/',
-                ),
-                deny=(
+                allow=([
+                    '/fiction/.+/'
+                ]),
+                deny=([
                     '/fiction/page/\d{1,}/',
-                    '/fiction/.+/#print',
                     '/fiction/.+/?share=.+',
                     '/fiction/reprint/',
                     '/\d{4}/\d{8}/.*podcast-f.shtml',
@@ -52,7 +55,8 @@ class StrangeHorizonsSpider(CrawlSpider):
                     '//ubbthreads/ubbthreads.php',
                     '/blog',
 
-                )
+                ]),
+                restrict_xpaths=(content_xpath)
             ), callback='parse_story'
         ),
     )
@@ -72,16 +76,14 @@ class StrangeHorizonsSpider(CrawlSpider):
         text            = ''
 
         story           = Story()
-        story['magazine'] = "Strange Horizons"
+        story['magazine'] = 'Strange Horizons'
         story['genre']  = ['speculative fiction']
         story['original_tags'] = story_post.xpath('.//a[contains(@rel, "category tag")]/text()').extract()
         story['url']    = response.url
-        story['title']  = story_post.xpath('./div[@class="title"]/a/text()').extract()
+        story['title']  = ''.join(story_post.xpath('./div[@class="title"]/a/text()').extract())
         story['author']  = story_post.xpath('./div[@class="byline"]/div[@class="author"]/a/text()').extract()
 
-        # Original date logic. Failed once due to inconsistent formatting.
-        # Easy fix would be to check date string for a comma, and parse appropriately
-        # See http://www.strangehorizons.com/2009/20090921/dark-f.shtml for failed story.
+        # Extract publication date
         month_name_no = dict((v.lower(),"%02d" % k) for k,v in enumerate(calendar.month_name))
         [pub_day, pub_month_name, pub_year] = story_post.xpath('./div[@class="byline"]/div[@class="date"]/a/text()').extract()[0].split()
         story['pub_month'] = pub_month_name.strip().lower()
