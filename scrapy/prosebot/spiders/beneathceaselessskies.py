@@ -8,16 +8,17 @@ from scrapy.linkextractors import LinkExtractor
 
 
 class BeneathCeaselessSkiesSpider(CrawlSpider):
-    name            = "beneathceaselessskies"
-    allowed_domains = ["beneath-ceaseless-skies.com"]
-    start_urls      = ["http://www.beneath-ceaseless-skies.com/stories/"]
+    name            = 'beneathceaselessskies'
+    allowed_domains = ['beneath-ceaseless-skies.com']
+    start_urls      = ['http://www.beneath-ceaseless-skies.com/stories/']
+    content_xpath   = '//td[@id="content_cell"]'
     rules           = (
         # Fiction index pages.
         Rule(LinkExtractor(
                 allow=(
                     '/stories/page/\d{1,}/'
                 ),
-                restrict_xpaths=('//td[@id="content_cell"]')
+                restrict_xpaths=(content_xpath)
             )
         ),
         # Fiction stories.
@@ -46,7 +47,8 @@ class BeneathCeaselessSkiesSpider(CrawlSpider):
                     '/contact/',
                     '/support-bcs/.*',
                     '/authors/.*',
-                )
+                ),
+                restrict_xpaths=(content_xpath)
             ), callback='parse_story'
         ),
     )
