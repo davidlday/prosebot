@@ -11,9 +11,9 @@ from scrapy.linkextractors import LinkExtractor
 class TorSpider(CrawlSpider):
     name            = "tor"
     allowed_domains = ["tor.com"]
-    base_url        = "http://www.tor.com/category/all-fiction/original-fiction/page/%s/"
+    page_url        = "http://www.tor.com/category/all-fiction/original-fiction/page/%s/"
     page            = 1
-    start_urls      = [base_url % page]
+    start_urls      = [page_url % page]
     rules           = (
         # Fiction index pages.
         Rule(LinkExtractor(
@@ -53,7 +53,7 @@ class TorSpider(CrawlSpider):
     # Inject the next page url in avoidance of Infinite Scroll
     def inject_next_page(self, links):
         self.page += 1
-        next_page = Link(self.base_url % self.page, "Page %s" % self.page)
+        next_page = Link(self.page_url % self.page, "Page %s" % self.page)
         links.append(next_page)
         return links
 
@@ -68,12 +68,12 @@ class TorSpider(CrawlSpider):
         story['genre']  = ['science fiction','fantasy','horror']
         story['url']    = response.url
         story['original_tags'] = response.xpath('//a[contains(@rel, "category")]/text()').extract()
-        story['title'] = response.xpath('//meta[@property="og:title"]/@content').extract()[0]
+        story['title'] = response.xpath('//meta[@property="og:title"]/@content').extract()
 
         # May have multiple authors
         # Probably need to do this check on the other sites as well
         # For now, just take the first one
-        story['author'] = response.xpath('//a[contains(@rel, "author")]/text()').extract()[0]
+        story['author'] = response.xpath('//a[contains(@rel, "author")]/text()').extract()
 
         # Extract Published Month / Year
         published_datetime = dateutil.parser.parse(response.xpath('//meta[@property="article:published_time"]/@content').extract()[0])
