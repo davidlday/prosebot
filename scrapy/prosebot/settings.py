@@ -70,7 +70,7 @@ ROBOTSTXT_OBEY = True
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'prosebot.pipelines.BookwormRestApiPipeline':   100,
-#    'prosebot.pipelines.ProsebotPipeline': 300,
+    'prosebot.pipelines.ProsebotPipeline':          300,
     'scrapysolr.SolrPipeline':                      500,
 }
 
