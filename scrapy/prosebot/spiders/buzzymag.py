@@ -8,9 +8,9 @@ from scrapy.spiders import CrawlSpider, Rule
 
 
 class BuzzymagSpider(CrawlSpider):
-    name            = "buzzymag"
-    allowed_domains = ["buzzymag.com"]
-    start_urls      = ["http://buzzymag.com/category/original-fiction/"]
+    name            = 'buzzymag'
+    allowed_domains = ['buzzymag.com']
+    start_urls      = ['http://buzzymag.com/category/original-fiction/']
     content_xpath   = '//*[@id="content_box"]'
     rules           = (
         # Fiction index pages.
