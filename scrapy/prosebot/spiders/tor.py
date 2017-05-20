@@ -7,29 +7,37 @@ from scrapy.spiders import CrawlSpider, Rule
 from scrapy.link import Link
 from scrapy.linkextractors import LinkExtractor
 
-
+# Tor.com seems to be using CloudFlare and the Bad Behavior WP plugin.
+# * http://marketersbraintrust.com/bad-behavior-cloudflare/
+# Attempted rotating the user agent, but no luck.
+# * http://tangww.com/2013/06/UsingRandomAgent/
+# * https://stackoverflow.com/questions/8372703/how-can-i-use-different-pipelines-for-different-spiders-in-a-single-scrapy-proje
 class TorSpider(CrawlSpider):
-    name            = "tor"
-    allowed_domains = ["tor.com"]
-    page_url        = "http://www.tor.com/category/all-fiction/original-fiction/page/%s/"
+    name            = 'tor'
+    allowed_domains = ['tor.com']
+    page_url        = 'http://www.tor.com/category/all-fiction/original-fiction/page/%s/'
     page            = 1
     start_urls      = [page_url % page]
+    content_xpath   = '//div[@id="infinite-scroll-wrapper"]'
     rules           = (
         # Fiction index pages.
         Rule(LinkExtractor(
-                allow=(
-                    ['/category/all-fiction/original-fiction/', '/category/all-fiction/original-fiction/page/\d{1,}/']
-                ),
-                restrict_xpaths=('//div[contains(@class, "archive-section")]')
+                allow=([
+                    '/category/all-fiction/original-fiction/',
+                    '/category/all-fiction/original-fiction/page/\d+/'
+                ]),
+                restrict_xpaths=(content_xpath)
             ),
             process_links='inject_next_page'
         ),
         # Fiction stories.
         Rule(LinkExtractor(
-                allow=(
+                allow=([
                     '/\d{4}/\d{2}/\d{2}/.+'
-                ),
-                deny=(
+                ]),
+                deny=([
+                    '/category/all-fiction/original-fiction/',
+                    '/category/all-fiction/original-fiction/page/\d+/',
                     '/features/series.*',
                     '/galleries.*',
                     '/community.*',
@@ -43,7 +51,8 @@ class TorSpider(CrawlSpider):
                     '/stories/prose\?order=title',
                     '/stories/prose\?order=author',
                     '/bios/authors/.+',
-                )
+                ]),
+                restrict_xpaths=(content_xpath)
             ),
             callback='parse_story'
         ),
@@ -64,15 +73,11 @@ class TorSpider(CrawlSpider):
         story_lines     = []
 
         story           = Story()
-        story['magazine'] = "Tor.com"
+        story['magazine'] = 'Tor.com'
         story['genre']  = ['science fiction','fantasy','horror']
         story['url']    = response.url
         story['original_tags'] = response.xpath('//a[contains(@rel, "category")]/text()').extract()
         story['title'] = response.xpath('//meta[@property="og:title"]/@content').extract()
-
-        # May have multiple authors
-        # Probably need to do this check on the other sites as well
-        # For now, just take the first one
         story['author'] = response.xpath('//a[contains(@rel, "author")]/text()').extract()
 
         # Extract Published Month / Year
