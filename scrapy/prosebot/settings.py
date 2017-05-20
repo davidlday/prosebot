@@ -17,7 +17,7 @@ LOG_LEVEL = 'WARN'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-USER_AGENT = 'prosebot (+https://www.prosegrinder.com)'
+USER_AGENT = 'Mozilla/5.0 (compatible; Prosebot/1.0; +https://www.prosegrinder.com/bot.html)'
 
 # Randomize Download Delay
 RANDOMIZE_DOWNLOAD_DELAY = True
@@ -31,9 +31,9 @@ ROBOTSTXT_OBEY = True
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-#DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = 2
 # The download delay setting will honor only one of:
-#CONCURRENT_REQUESTS_PER_DOMAIN = 16
+CONCURRENT_REQUESTS_PER_DOMAIN = 1
 #CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
@@ -69,16 +69,16 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'prosebot.pipelines.BookwormRestApiPipeline':   100,
-    'prosebot.pipelines.ProsebotPipeline':          300,
-    'scrapysolr.SolrPipeline':                      500,
+    'prosebot.pipelines.BookwormRestApiPipeline':                 500,
+    'prosebot.pipelines.ProsebotPipeline':                        600,
+    'scrapysolr.SolrPipeline':                                    700,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
 AUTOTHROTTLE_ENABLED = True
 # The initial download delay
-AUTOTHROTTLE_START_DELAY = 5
+AUTOTHROTTLE_START_DELAY = 1
 # The maximum download delay to be set in case of high latencies
 AUTOTHROTTLE_MAX_DELAY = 60
 # The average number of requests Scrapy should be sending in parallel to
