@@ -62,13 +62,7 @@ class BuzzymagSpider(CrawlSpider):
         story['pub_date'] = story['pub_year'] + '-' + month_name_no[story['pub_month']] + '-' + pub_day
 
         # Extract the body of the story
-        lines = []
-        for p in story_post.xpath('.//div[contains(@class,"post-single-content")]/p/text()').extract():
-            lines.append(p.strip())
-            lines.append("\n")
-
-        story['text'] = ''.join(lines)
-
-        # Populate metrics here
+        story_lines = [p.strip() for p in story_post.xpath('.//div[contains(@class,"post-single-content")]/p/text()').extract()]
+        story['text']   = "\n".join(story_lines)
 
         yield story
