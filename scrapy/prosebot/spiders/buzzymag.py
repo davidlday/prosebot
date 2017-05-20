@@ -11,15 +11,25 @@ class BuzzymagSpider(CrawlSpider):
     name            = "buzzymag"
     allowed_domains = ["buzzymag.com"]
     start_urls      = ["http://buzzymag.com/category/original-fiction/"]
+    content_xpath   = '//*[@id="content_box"]'
     rules           = (
         # Fiction index pages.
-        Rule(LinkExtractor(allow=('/category/original-fiction/page/\d{1,}/'))),
+        Rule(LinkExtractor(
+                allow=([
+                    '/category/original-fiction/',
+                    '/category/original-fiction/page/\d{1,}/'
+                ]),
+                restrict_xpaths=(content_xpath)
+            )
+        ),
         # Fiction stories.
         Rule(LinkExtractor(
                 allow=(
                     '/.+'
                 ),
                 deny=(
+                    '/category/original-fiction/',
+                    '/category/original-fiction/page/\d{1,}/',
                     '/about/',
                     '/contact/',
                     '/submissions/',
@@ -35,7 +45,8 @@ class BuzzymagSpider(CrawlSpider):
                     '/.+-interview/',
                     '/.+-book-review/',
                     '/.+-blog-.+/',
-                )
+                ),
+                restrict_xpaths=(content_xpath)
             ), callback='parse_story'
         ),
     )
