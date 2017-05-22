@@ -9,6 +9,7 @@ from scrapy.linkextractors import LinkExtractor
 
 class NightmareSpider(CrawlSpider):
     name            = 'nightmare'
+    magazine_name   = 'Nightmare Magazine'
     allowed_domains = ['nightmare-magazine.com']
     start_urls      = ['http://www.nightmare-magazine.com/fiction/']
     content_xpath   = '//*[@id="content"]'
@@ -45,7 +46,7 @@ class NightmareSpider(CrawlSpider):
         text            = ''
 
         story           = Story()
-        story['magazine'] = 'Nightmare Magazine'
+        story['magazine'] = self.magazine_name
         story['genre']  = ['horror']
         # No original_tags on this site
         story['original_tags'] = []

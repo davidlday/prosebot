@@ -14,6 +14,7 @@ from scrapy.linkextractors import LinkExtractor
 # * https://stackoverflow.com/questions/8372703/how-can-i-use-different-pipelines-for-different-spiders-in-a-single-scrapy-proje
 class TorSpider(CrawlSpider):
     name            = 'tor'
+    magazine_name   = 'Tor.com'
     allowed_domains = ['tor.com']
     page_url        = 'http://www.tor.com/category/all-fiction/original-fiction/page/%s/'
     page            = 1
@@ -73,7 +74,7 @@ class TorSpider(CrawlSpider):
         story_lines     = []
 
         story           = Story()
-        story['magazine'] = 'Tor.com'
+        story['magazine'] = self.magazine_name
         story['genre']  = ['science fiction','fantasy','horror']
         story['url']    = response.url
         story['original_tags'] = response.xpath('//a[contains(@rel, "category")]/text()').extract()

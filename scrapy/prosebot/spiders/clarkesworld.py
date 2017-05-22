@@ -8,6 +8,7 @@ from scrapy.linkextractors import LinkExtractor
 
 class ClarkesworldSpider(CrawlSpider):
     name            = 'clarkesworld'
+    magazine_name   = 'Clarkesworld'
     allowed_domains = ['clarkesworldmagazine.com']
     start_urls      = ['http://clarkesworldmagazine.com/category/Fiction/']
     content_xpath   = '//div[@class="story-frame"]'
@@ -45,7 +46,7 @@ class ClarkesworldSpider(CrawlSpider):
         text            = ''
 
         story           = Story()
-        story['magazine'] = 'Clarkesworld'
+        story['magazine'] = self.magazine_name
         story['genre']  = ['science fiction','fantasy']
         # No tags on stories.
         story['original_tags'] = []

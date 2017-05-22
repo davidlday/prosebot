@@ -9,6 +9,7 @@ from scrapy.spiders import CrawlSpider, Rule
 
 class BuzzymagSpider(CrawlSpider):
     name            = 'buzzymag'
+    magazine_name   = 'Buzzy Mag'
     allowed_domains = ['buzzymag.com']
     start_urls      = ['http://buzzymag.com/category/original-fiction/']
     content_xpath   = '//*[@id="content_box"]'
@@ -57,7 +58,7 @@ class BuzzymagSpider(CrawlSpider):
         text            = ''
 
         story           = Story()
-        story['magazine'] = "Buzzy Mag"
+        story['magazine'] = self.magazine_name
         story['genre']  = ['fantasy', 'horror', 'science fiction']
         story['original_tags'] = story_post.xpath('.//span[@class="thecategory"]/a/text()').extract()
         story['url']    = response.url

@@ -9,6 +9,7 @@ from scrapy.linkextractors import LinkExtractor
 
 class BeneathCeaselessSkiesSpider(CrawlSpider):
     name            = 'beneathceaselessskies'
+    magazine_name   = 'Beneath Ceaseless Skies'
     allowed_domains = ['beneath-ceaseless-skies.com']
     start_urls      = ['http://www.beneath-ceaseless-skies.com/stories/']
     content_xpath   = '//td[@id="content_cell"]'
@@ -59,7 +60,7 @@ class BeneathCeaselessSkiesSpider(CrawlSpider):
         text            = ''
 
         story           = Story()
-        story['magazine'] = "Beneath Ceaseless Skies"
+        story['magazine'] = self.magazine_name
         story['genre']  = ['fantasy']
         story['url']    = response.url
         # No original_tags on this site

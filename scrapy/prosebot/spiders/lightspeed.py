@@ -11,11 +11,11 @@ class LightspeedSpider(CrawlSpider):
 
     name            = 'lightspeed'
     magazine_name   = 'Lightspeed Magazine'
+    allowed_domains = ['lightspeedmagazine.com']
     start_urls      = [
         'http://www.lightspeedmagazine.com/category/fiction/fantasy/',
         'http://www.lightspeedmagazine.com/category/fiction/science-fiction/'
     ]
-    allowed_domains = ['lightspeedmagazine.com']
     content_xpath   = '//*[@id="content"]'
     rules           = (
         # Fiction index pages.

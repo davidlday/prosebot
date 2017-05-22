@@ -9,6 +9,7 @@ from scrapy.linkextractors import LinkExtractor
 
 class StrangeHorizonsSpider(CrawlSpider):
     name            = 'strangehorizons'
+    magazine_name   = 'Strange Horizons'
     allowed_domains = ['strangehorizons.com']
     page_url        = 'http://strangehorizons.com/fiction/page/%s/'
     page            = 1
@@ -76,7 +77,7 @@ class StrangeHorizonsSpider(CrawlSpider):
         text            = ''
 
         story           = Story()
-        story['magazine'] = 'Strange Horizons'
+        story['magazine'] = self.magazine_name
         story['genre']  = ['speculative fiction']
         story['original_tags'] = story_post.xpath('.//a[contains(@rel, "category tag")]/text()').extract()
         story['url']    = response.url

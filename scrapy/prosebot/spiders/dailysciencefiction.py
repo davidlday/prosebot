@@ -8,6 +8,7 @@ from scrapy.linkextractors import LinkExtractor
 
 class DailyScienceFictionSpider(CrawlSpider):
     name            = 'dailysciencefiction'
+    magazine_name   = 'Daily Science Fiction'
     allowed_domains = ['dailysciencefiction.com']
     start_urls      = ['http://dailysciencefiction.com/month']
     content_xpath   = '//*[@id="mainBodyContent"]'
@@ -40,7 +41,7 @@ class DailyScienceFictionSpider(CrawlSpider):
         text            = ''
 
         story           = Story()
-        story['magazine'] = 'Daily Science Fiction'
+        story['magazine'] = self.magazine_name
         story['genre']  = ['science fiction']
         story['url']    = response.url
         # Tags are embedded in the URL, but not actually displayed on the story's page.
