@@ -70,7 +70,8 @@ class ApexSpider(CrawlSpider):
         story['pub_month'] = calendar.month_name[int(pub_month_no)].lower()
 
         # Extract the body of the story
-        story_lines = [p.strip() for p in story_post.xpath('.//*[@id="left-area"]/div[contains(@class,"post")]/p//text()').extract()]
+        story_lines = [''.join(p.xpath('.//text()').extract())
+                for p in story_post.xpath('.//*[@id="left-area"]/div[contains(@class,"post")]/p')]
         story['text']   = "\n".join(story_lines)
 
         yield story

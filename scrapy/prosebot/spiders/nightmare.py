@@ -62,7 +62,8 @@ class NightmareSpider(CrawlSpider):
         story['pub_date'] = story['pub_year'] + '-' + pub_month_no + '-01'
 
         # Extract the body of the story
-        story_lines = [p.strip() for p in story_post.xpath('.//div[contains(@class, "entry-content")]/p//text()').extract()]
+        story_lines = [''.join(p.xpath('.//text()').extract())
+                for p in story_post.xpath('.//div[contains(@class, "entry-content")]/p')]
         story['text']   = "\n".join(story_lines)
 
         yield story

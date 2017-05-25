@@ -65,7 +65,8 @@ class ClarkesworldSpider(CrawlSpider):
         story['pub_date'] = story['pub_year'] + '-' + month_name_no[story['pub_month']] + '-01'
 
         # Extract the body of the story
-        story_lines = [p.strip() for p in story_post.xpath('//div[@class="story-text"]/p//text()').extract()]
+        story_lines = [''.join(p.xpath('.//text()').extract())
+                for p in story_post.xpath('.//div[@class="story-text"]/p')]
         story['text']   = "\n".join(story_lines)
 
         yield story

@@ -63,7 +63,8 @@ class DailyScienceFictionSpider(CrawlSpider):
         story['pub_date'] = story['pub_year'] + '-' + month_name_no[story['pub_month']] + '-' + pub_day
 
         # Extract the body of the story
-        story_lines = [p.strip() for p in story_post.xpath('.//div[contains(@class, "storyText")]/text()').extract()]
+        story_lines = [''.join(p.xpath('.//text()').extract())
+                for p in story_post.xpath('.//div[contains(@class, "storyText")]')]
         story['text']   = "\n".join(story_lines)
 
         yield story
