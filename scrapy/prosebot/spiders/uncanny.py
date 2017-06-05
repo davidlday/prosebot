@@ -13,7 +13,10 @@ class UncannySpider(CrawlSpider):
     magazine_name   = 'Uncanny Magazine'
     magazine_genre  = ['fantasy','science fiction']
     allowed_domains = ['uncannymagazine.com']
-    start_urls      = ['http://uncannymagazine.com/type/fiction/']
+    start_urls      = [
+        'http://uncannymagazine.com/issues/',
+        'http://uncannymagazine.com/type/fiction/',
+    ]
     content_xpath   = '//main[@class="archive_main"]'
     rules           = (
         # Issue index pages.
@@ -73,6 +76,8 @@ class UncannySpider(CrawlSpider):
         r'\s(?:%s)\s\d{1,2},\s\d{4}' % '|'.join(calendar.month_name[1:])
     )
 
+    # Uncanny doesn't provide dates for each story, but does link to the issue.
+    # Build a list of issue URLs and corresponding publication date.
     def parse_issue_date(self, response):
         if response.url not in self.issue_dates:
             date_text = response.xpath(
@@ -81,6 +86,7 @@ class UncannySpider(CrawlSpider):
             match = self.issue_date_pattern.match(date_text[0])
             if match:
                 self.issue_dates[response.url] = dateutil.parser.parse(match[0].strip())
+                print(response.url + ':' + self.issue_dates[response.url])
 
     def parse_story(self, response):
         base_xpath      = '//main[@class="main"]/article[re:test(@id,"post-\d+")]'
@@ -96,8 +102,11 @@ class UncannySpider(CrawlSpider):
         story['title']  = ' '.join(story_post.xpath('./h2[contains(@class,"entry-title")]//text()').extract())
         story['author'] = story_post.xpath('./h4[@class="byline"]/a/text()').extract()
 
-        # Derive publication date from issue
-        meta_pub_date = dateutil.parser.parse(response.xpath('//meta[@property="article:published_time"]/@content').extract()[0])
+        # Derive publication date from issue url
+        issue_link = response.xpath(
+            '//aside/div[@class="widget"]/div[@class="featured_issue_thumbnail"]/a/@href'
+        ).extract()[0]
+        meta_pub_date = self.issue_dates[issue_link]
         story['pub_year'] = str(meta_pub_date.year)
         pub_month_no = "%02d" % meta_pub_date.month
         story['pub_month'] = calendar.month_name[meta_pub_date.month].lower()
