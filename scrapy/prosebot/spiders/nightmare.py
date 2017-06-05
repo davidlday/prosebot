@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import scrapy
 import re
 import calendar
@@ -17,6 +18,7 @@ class NightmareSpider(CrawlSpider):
         # Fiction index pages.
         Rule(LinkExtractor(
                 allow=([
+                    '/fiction/',
                     '/fiction/page/\d{1,}/',
                 ]),
                 restrict_xpaths=(content_xpath)

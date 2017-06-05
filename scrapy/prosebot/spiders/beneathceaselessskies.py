@@ -1,10 +1,10 @@
+# -*- coding: utf-8 -*-
 import scrapy
 import re
 import calendar
 from prosebot.items import Story
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
-
 
 
 class BeneathCeaselessSkiesSpider(CrawlSpider):

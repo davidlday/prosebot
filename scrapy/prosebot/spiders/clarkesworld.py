@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import scrapy
 import re
 import calendar
@@ -38,7 +39,6 @@ class ClarkesworldSpider(CrawlSpider):
             ), callback='parse_story'
         ),
     )
-
 
     def parse_story(self, response):
         base_xpath      = '//div[contains(@class, "interior_body_1")]'

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import scrapy
 import calendar
 import re
@@ -59,14 +60,12 @@ class TorSpider(CrawlSpider):
         ),
     )
 
-
     # Inject the next page url in avoidance of Infinite Scroll
     def inject_next_page(self, links):
         self.page += 1
         next_page = Link(self.page_url % self.page, "Page %s" % self.page)
         links.append(next_page)
         return links
-
 
     def parse_story(self, response):
         base_xpath      = '//article[contains(@class,"category-original-fiction")]'

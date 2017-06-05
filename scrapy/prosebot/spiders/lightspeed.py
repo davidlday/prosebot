@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from prosebot.items import Story
 from scrapy.exceptions import CloseSpider
 from scrapy.linkextractors import LinkExtractor

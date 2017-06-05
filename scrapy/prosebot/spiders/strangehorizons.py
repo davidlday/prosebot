@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import scrapy
 import re
 import calendar
@@ -55,13 +56,11 @@ class StrangeHorizonsSpider(CrawlSpider):
                     '/fund_drives/.*',
                     '//ubbthreads/ubbthreads.php',
                     '/blog',
-
                 ]),
                 restrict_xpaths=(content_xpath)
             ), callback='parse_story'
         ),
     )
-
 
     # Inject the next page url in avoidance of Infinite Scroll
     def inject_next_page(self, links):
@@ -69,7 +68,6 @@ class StrangeHorizonsSpider(CrawlSpider):
         next_page = Link(self.page_url % self.page, "Page %s" % self.page)
         links.append(next_page)
         return links
-
 
     def parse_story(self, response):
         base_xpath      = '//div[contains(@class,"post-container")]/div[@class="post"]'
