@@ -49,29 +49,6 @@ class UncannySpider(CrawlSpider):
         r'\s(?:%s)\s\d{1,2},\s\d{4}' % '|'.join(calendar.month_name[1:])
     )
 
-    # Uncanny doesn't provide dates for each story, but does link to the issue.
-    # Build a list of issue URLs and corresponding publication date.
-    # See: https://doc.scrapy.org/en/latest/topics/request-response.html#passing-additional-data-to-callback-functions
-    def parse_issue_date(self, response):
-        story = response.meta['story']
-        print("Looking for issue date: %s" % response.url)
-        if response.url not in self.issue_dates:
-            date_text = [' '.join(p.xpath('.//text()').extract())
-                for p in response.xpath(
-                    '//main[@class="issue_main"]//div[@class="issue_content"]/p'
-                )]
-            match = self.issue_date_pattern.match(date_text[0])
-            self.issue_dates[response.url] = dateutil.parser.parse(match[0].strip())
-            print(response.url + ': ' + self.issue_dates[response.url])
-        # Set date based on issue
-        meta_pub_date = self.issue_dates[response.url]
-        story['pub_year'] = str(meta_pub_date.year)
-        pub_month_no = "%02d" % meta_pub_date.month
-        story['pub_month'] = calendar.month_name[meta_pub_date.month].lower()
-        story['pub_date'] = story['pub_year'] + '-' + pub_month_no + '-01'
-
-        yield story
-
     def parse_story(self, response):
         base_xpath      = '//main[@class="main"]/article[re:test(@id,"post-\d+")]'
         story_post      = response.xpath(base_xpath)
@@ -102,4 +79,30 @@ class UncannySpider(CrawlSpider):
         issue_request.meta['story'] = story
 
         yield issue_request
+
+    # Uncanny doesn't provide dates for each story, but does link to the issue,
+    # which in turns has an availability date in the first paragraph.
+    # Build a list of issue URLs and corresponding publication date.
+    # See: https://doc.scrapy.org/en/latest/topics/request-response.html#passing-additional-data-to-callback-functions
+    def parse_issue_date(self, response):
+        story = response.meta['story']
+        if response.url not in self.issue_dates:
+            date_text = [' '.join(p.xpath('.//text()').extract())
+                for p in response.xpath(
+                    '//main[@class="issue_main"]//div[@class="issue_content"]/p'
+                )]
+            match = self.issue_date_pattern.search(' '.join(date_text))
+            if not match:
+                self.logger.error("No match %s", self.issue_date_pattern)
+            else:
+                self.issue_dates[response.url] = dateutil.parser.parse(match[0].strip())
+        # Set date based on issue
+        meta_pub_date = self.issue_dates[response.url]
+        story['pub_year'] = str(meta_pub_date.year)
+        pub_month_no = "%02d" % meta_pub_date.month
+        pub_day_no =  "%02d" % meta_pub_date.day
+        story['pub_month'] = calendar.month_name[meta_pub_date.month].lower()
+        story['pub_date'] = story['pub_year'] + '-' + pub_month_no + '-' + pub_day_no
+
+        yield story
 
