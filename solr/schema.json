@@ -122,6 +122,14 @@
 
 
   "add-field":{
+    "name":"paragraph_count",
+    "type":"int",
+    "indexed":true,
+    "stored":true,
+    "required":true,
+    "multiValued":false
+  },
+  "add-field":{
     "name":"sentence_count",
     "type":"int",
     "indexed":true,
@@ -155,6 +163,14 @@
   },
   "add-field":{
     "name":"complex_word_count",
+    "type":"int",
+    "indexed":true,
+    "stored":true,
+    "required":true,
+    "multiValued":false
+  },
+  "add-field":{
+    "name":"long_word_count",
     "type":"int",
     "indexed":true,
     "stored":true,
@@ -299,6 +315,14 @@
   },
   "add-field":{
     "name":"narrative_syllable_count",
+    "type":"int",
+    "indexed":true,
+    "stored":true,
+    "required":true,
+    "multiValued":false
+  },
+  "add-field":{
+    "name":"narrative_unique_word_count",
     "type":"int",
     "indexed":true,
     "stored":true,
