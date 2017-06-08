@@ -3,6 +3,9 @@
 # Make sure solr is started
 $SOLR_ROOT/bin/solr start -p 8983
 
+# Uncomment to drop collection
+# $SOLR_ROOT/bin/solr delete -c shortstories
+
 # Create core and import schema
 $SOLR_ROOT/bin/solr create -c shortstories
 curl -X POST -H 'Content-type:application/json' --data-binary @schema.json http://localhost:8983/solr/shortstories/schema
