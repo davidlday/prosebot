@@ -44,7 +44,6 @@ class UncannySpider(CrawlSpider):
             ), callback='parse_story'
         ),
     )
-    issue_dates = {}
     issue_date_pattern = re.compile(
         r'\s(?:%s)\s\d{1,2},\s\d{4}' % '|'.join(calendar.month_name[1:])
     )
@@ -57,7 +56,6 @@ class UncannySpider(CrawlSpider):
         story           = Story()
         story['magazine'] = self.magazine_name
         story['genre']  = self.magazine_genre
-        # No original_tags on this site
         story['original_tags'] = []
         story['url']    = response.url
         story['title']  = ' '.join(story_post.xpath('./h2[contains(@class,"entry-title")]//text()').extract())
@@ -65,7 +63,7 @@ class UncannySpider(CrawlSpider):
 
         # Extract the body of the story
         story_lines = [''.join(p.xpath('.//text()').extract())
-                for p in story_post.xpath('.//div[contains(@class, "entry-content")]/p[re:test(@class,"p[1-3]")]')]
+                for p in story_post.xpath('.//div[contains(@class, "entry-content")]/p[re:test(@class,"^$|p[1-3]")]')]
         story['text']   = "\n".join(story_lines)
 
         # Derive publication date from issue page
@@ -74,35 +72,30 @@ class UncannySpider(CrawlSpider):
             '//aside/div[@class="widget"]/div[@class="featured_issue_thumbnail"]/a/@href'
         ).extract()[0]
         issue_request = scrapy.Request(
-            issue_url, callback=self.parse_issue_date
+            issue_url, dont_filter=True,
+            callback=self.parse_story_issue_date
         )
         issue_request.meta['story'] = story
-
         yield issue_request
 
     # Uncanny doesn't provide dates for each story, but does link to the issue,
-    # which in turns has an availability date in the first paragraph.
-    # Build a list of issue URLs and corresponding publication date.
+    # which in turn has an availability date in the first paragraph.
     # See: https://doc.scrapy.org/en/latest/topics/request-response.html#passing-additional-data-to-callback-functions
-    def parse_issue_date(self, response):
-        story = response.meta['story']
-        if response.url not in self.issue_dates:
-            date_text = [' '.join(p.xpath('.//text()').extract())
-                for p in response.xpath(
-                    '//main[@class="issue_main"]//div[@class="issue_content"]/p'
-                )]
-            match = self.issue_date_pattern.search(' '.join(date_text))
-            if not match:
-                self.logger.error("No match %s", self.issue_date_pattern)
-            else:
-                self.issue_dates[response.url] = dateutil.parser.parse(match[0].strip())
-        # Set date based on issue
-        meta_pub_date = self.issue_dates[response.url]
-        story['pub_year'] = str(meta_pub_date.year)
-        pub_month_no = "%02d" % meta_pub_date.month
-        pub_day_no =  "%02d" % meta_pub_date.day
-        story['pub_month'] = calendar.month_name[meta_pub_date.month].lower()
-        story['pub_date'] = story['pub_year'] + '-' + pub_month_no + '-' + pub_day_no
-
+    def parse_story_issue_date(self, response):
+        story           = response.meta['story']
+        date_text = [' '.join(p.xpath('.//text()').extract())
+            for p in response.xpath(
+                '//main[@class="issue_main"]//div[@class="issue_content"]/p'
+            )]
+        match = self.issue_date_pattern.search(' '.join(date_text))
+        if not match:
+            self.logger.error("No issue date found at %s", response.url)
+        else:
+            meta_pub_date = dateutil.parser.parse(match[0].strip())
+            story['pub_year'] = str(meta_pub_date.year)
+            pub_month_no = "%02d" % meta_pub_date.month
+            pub_day_no =  "%02d" % meta_pub_date.day
+            story['pub_month'] = calendar.month_name[meta_pub_date.month].lower()
+            story['pub_date'] = story['pub_year'] + '-' + pub_month_no + '-' + pub_day_no
         yield story
 
