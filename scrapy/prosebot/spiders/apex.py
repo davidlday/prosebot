@@ -10,6 +10,7 @@ from scrapy.linkextractors import LinkExtractor
 class ApexSpider(CrawlSpider):
     name            = 'apex'
     magazine_name   = 'Apex Magazine'
+    magazine_genre  = ['fantasy', 'horror', 'science fiction']
     allowed_domains = ['apex-magazine.com']
     start_urls      = ['http://www.apex-magazine.com/category/short-fiction/']
     content_xpath   = '//*[@id="left-area"]'
@@ -59,7 +60,7 @@ class ApexSpider(CrawlSpider):
 
         story           = Story()
         story['magazine'] = self.magazine_name
-        story['genre']  = ['fantasy', 'horror', 'science fiction']
+        story['genre']  = self.magazine_genre
         story['url']    = response.url
         story['original_tags'] = story_post.xpath('.//div[@id="tags"]/a/text()').extract()
         story['title']  = story_post.xpath('.//*[@id="category-name"]/h1[@class="category-title"]/text()').extract()[0]
