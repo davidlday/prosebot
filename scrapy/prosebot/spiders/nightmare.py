@@ -11,6 +11,7 @@ from scrapy.linkextractors import LinkExtractor
 class NightmareSpider(CrawlSpider):
     name            = 'nightmare'
     magazine_name   = 'Nightmare Magazine'
+    magazine_genre  = ['horror']
     allowed_domains = ['nightmare-magazine.com']
     start_urls      = ['http://www.nightmare-magazine.com/fiction/']
     content_xpath   = '//*[@id="content"]'
@@ -43,14 +44,13 @@ class NightmareSpider(CrawlSpider):
     )
 
     def parse_story(self, response):
-        base_xpath      = '//div[@id="content"]//div[re:test(@id,"post-\d+")]'
+        base_xpath      = '//div[re:test(@id,"post-\d+")]'
         story_post      = response.xpath(base_xpath)
         text            = ''
 
         story           = Story()
         story['magazine'] = self.magazine_name
-        story['genre']  = ['horror']
-        # No original_tags on this site
+        story['genre']  = self.magazine_genre
         story['original_tags'] = []
         story['url']    = response.url
         story['title']  = ' '.join(story_post.xpath('.//h1[contains(@class,"posttitle")]/text()').extract())
