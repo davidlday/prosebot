@@ -69,9 +69,9 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 1
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'prosebot.pipelines.BookwormRestApiPipeline':                 500,
+    # 'prosebot.pipelines.BookwormRestApiPipeline':                 500,
     'prosebot.pipelines.ProsebotPipeline':                        600,
-    'scrapysolr.SolrPipeline':                                    700,
+    # 'scrapysolr.SolrPipeline':                                    700,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -96,49 +96,49 @@ HTTPCACHE_DIR = 'httpcache'
 HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 HTTPCACHE_POLICY = 'scrapy.extensions.httpcache.RFC2616Policy'
 
-# BookwormRestApiPipeline Configuration
-BOOKWORM_REST_URI = 'http://localhost:8080/analysis'  # Dropwizard Rest Service
+# # BookwormRestApiPipeline Configuration
+# BOOKWORM_REST_URI = 'http://localhost:8080/analysis'  # Dropwizard Rest Service
 
-# ScrapySolr Configuration
-SOLR_URL = 'http://localhost:8983/solr/shortstories'
-SOLR_MAPPING = {
-    'id':   'url',
+# # ScrapySolr Configuration
+# SOLR_URL = 'http://localhost:8983/solr/shortstories'
+# SOLR_MAPPING = {
+#     'id':   'url',
 
-    'url':            'url',
-    'magazine':	      'magazine',
-    'pub_date':	      'pub_date',
-    'title':          'title',
-    'author':         'author',
-    'genre':          'genre',
-    'original_tags':	'original_tags',
-    'text':           'text',
+#     'url':            'url',
+#     'magazine':	      'magazine',
+#     'pub_date':	      'pub_date',
+#     'title':          'title',
+#     'author':         'author',
+#     'genre':          'genre',
+#     'original_tags':	'original_tags',
+#     'text':           'text',
 
-    'avg_syllables_per_word':	'avg_syllables_per_word',
-    'avg_words_per_sentence': 'avg_words_per_sentence',
-    'complex_word_count':	'complex_word_count',
-    'dialogue_syllable_count':	'dialogue_syllable_count',
-    'dialogue_syllable_percentage':	'dialogue_syllable_percentage',
-    'dialogue_unique_word_count':	'dialogue_unique_word_count',
-    'dialogue_word_count':	'dialogue_word_count',
-    'dialogue_word_percentage':	'dialogue_word_percentage',
-    'long_word_count': 'long_word_count',
-    'narrative_syllable_count':	'narrative_syllable_count',
-    'narrative_unique_word_count': 'narrative_unique_word_count',
-    'narrative_word_count':	'narrative_word_count',
-    'paragraph_count': 'paragraph_count',
-    'pov':	'pov',
-    'sentence_count': 'sentence_count',
-    'syllable_count':	'syllable_count',
-    'unique_word_count':	'unique_word_count',
-    'unique_words':	'unique_words',
-    'word_count': 'word_count',
+#     'avg_syllables_per_word':	'avg_syllables_per_word',
+#     'avg_words_per_sentence': 'avg_words_per_sentence',
+#     'complex_word_count':	'complex_word_count',
+#     'dialogue_syllable_count':	'dialogue_syllable_count',
+#     'dialogue_syllable_percentage':	'dialogue_syllable_percentage',
+#     'dialogue_unique_word_count':	'dialogue_unique_word_count',
+#     'dialogue_word_count':	'dialogue_word_count',
+#     'dialogue_word_percentage':	'dialogue_word_percentage',
+#     'long_word_count': 'long_word_count',
+#     'narrative_syllable_count':	'narrative_syllable_count',
+#     'narrative_unique_word_count': 'narrative_unique_word_count',
+#     'narrative_word_count':	'narrative_word_count',
+#     'paragraph_count': 'paragraph_count',
+#     'pov':	'pov',
+#     'sentence_count': 'sentence_count',
+#     'syllable_count':	'syllable_count',
+#     'unique_word_count':	'unique_word_count',
+#     'unique_words':	'unique_words',
+#     'word_count': 'word_count',
 
-    'automated_readability_index':	'automated_readability_index',
-    'coleman_liau_index':	'coleman_liau_index',
-    'flesch_kincaid_grade_level':	'flesch_kincaid_grade_level',
-    'flesch_reading_ease':	'flesch_reading_ease',
-    'gunning_fog_index':	'gunning_fog_index',
-    'lix':	'lix',
-    'rix':	'rix',
-    'smog_index':	'smog_index',
-}
+#     'automated_readability_index':	'automated_readability_index',
+#     'coleman_liau_index':	'coleman_liau_index',
+#     'flesch_kincaid_grade_level':	'flesch_kincaid_grade_level',
+#     'flesch_reading_ease':	'flesch_reading_ease',
+#     'gunning_fog_index':	'gunning_fog_index',
+#     'lix':	'lix',
+#     'rix':	'rix',
+#     'smog_index':	'smog_index',
+# }
